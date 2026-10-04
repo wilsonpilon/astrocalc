@@ -1,7 +1,6 @@
-# SPEC Godot - Operacao Sideral
+# SPEC Godot - Matematica nas Estrelas
 
-Documento vivo de execucao para a versao Godot de **Operacao Sideral - RPG
-Matematico** (antigo "Matematica nas Estrelas").
+Documento vivo de execucao para a versao Godot de **Matematica nas Estrelas**.
 
 Este arquivo deve ser atualizado durante o desenvolvimento. Ao concluir uma
 tarefa, marque sua caixa com `[x]`. Quando uma decisao mudar, atualize a secao
@@ -9,13 +8,11 @@ correspondente e registre a alteracao no Historico de decisoes.
 
 ## Estado atual
 
-- **Fase atual:** Fase 1 - Fundacao do projeto Godot (em paralelo com o
-  fechamento das lacunas da Fase 0)
-- **Ultimo marco concluido:** GDD v3.0 gerado a partir do Manual v2.1 (D12)
-- **Proximo passo recomendado:** Decidir as lacunas L1-L5 do GDD (sao as que
-  bloqueiam o Core) e concluir a Aula 1 (projeto, nos, cenas e sinais)
-- **Bloqueios conhecidos:** Ataque do chefe e ordem da rodada no Co-op (GDD L1,
-  L2) bloqueiam a Fase 7
+- **Fase atual:** Fase 1 - Fundacao do projeto Godot
+- **Ultimo marco concluido:** Regras fechadas no GDD v2.1 e tecnologia definida
+- **Proximo passo recomendado:** Aula 1 - instalar/abrir Godot 4.7, criar o
+  projeto e entender nos, cenas e sinais
+- **Bloqueios conhecidos:** Nenhum
 - **Ultima atualizacao:** 2026-10-03
 
 ### Legenda
@@ -30,8 +27,9 @@ correspondente e registre a alteracao no Historico de decisoes.
 
 ## Objetivo
 
-Criar a versao digital do RPG matematico de combate por turnos **Operacao
-Sideral** usando Godot, com uma separacao rigida entre:
+Criar uma versao moderna do jogo educacional de combate por turnos
+**Matematica nas Estrelas** usando Godot, preservando as mesmas regras de uma
+futura versao MSX e uma separacao rigida entre:
 
 1. **Core:** regras, turnos, dados, RNG, cronometros, validacao matematica,
    atributos e condicoes de vitoria.
@@ -43,26 +41,39 @@ A camada visual nao pode alterar diretamente HP, dados, turnos ou regras. Toda
 alteracao de batalha deve passar pelo Core.
 
 O projeto tambem e um percurso de aprendizado: o desenvolvedor esta aprendendo
-Godot durante a construcao, entao cada fase introduz os conceitos da engine de
-forma gradual.
+Godot durante a construcao, entao cada fase deve introduzir os conceitos da
+engine de forma gradual.
 
-## Documentos
+## Relacao com a versao MSX
 
-- `GDD.md` (v3.0): define o jogo e suas regras. E a fonte principal.
+As duas versoes devem compartilhar:
+
+- Terminologia.
+- Tabelas de personagens e dificuldades.
+- Ordem das fases de batalha.
+- Resultados para a mesma semente e os mesmos comandos, quando viavel.
+- Casos de teste das regras.
+- Versao do formato de dados.
+
+Os documentos possuem objetivos diferentes:
+
+- `GDD.md`: define o jogo e suas regras (atualmente v2.1).
+- `SPEC-msx.md`: define a implementacao para MSX (futura).
 - `SPEC-godot.md`: define a implementacao para Godot.
-- Fonte das regras: Manual Operacao Sideral v2.1 (D12). Todos os manuais
-  anteriores estao substituidos.
 
-Quando houver conflito, o GDD e a fonte principal das regras. A SPEC deve ser
-atualizada depois dele.
+Quando houver conflito, o GDD atualizado e a fonte principal das regras. As
+SPECs devem ser atualizadas depois dele.
 
 ## Plataforma e tecnologia
+
+### Configuracao-base
 
 - **Engine:** Godot 4.7 estavel (travada durante o desenvolvimento).
 - **Plataforma principal:** Windows. **Secundaria:** Linux.
 - **Renderer:** Compatibility.
 - **Projeto:** 2D.
-- **Resolucao interna:** 1280x720, 16:9 com preservacao da proporcao.
+- **Resolucao interna:** 1280x720.
+- **Aspecto:** 16:9 com preservacao da proporcao.
 - **UI:** nos `Control` e `Container`.
 - **Linguagem:** GDScript em todas as camadas.
 - **Dados:** Resources ou JSON validado, conforme a finalidade.
@@ -72,45 +83,46 @@ atualizada depois dele.
 
 O Core e escrito em **GDScript puro**:
 
-- Classes `RefCounted` (sem heranca de `Node`).
+- Classes `RefCounted` (ou `class_name` sem heranca de `Node`).
 - Zero dependencia de cenas e nos.
 - Nao usa `Node`, `Timer`, `SceneTree` ou sinais internamente.
 - Comunicacao por comandos (entrada) e fila de eventos (saida).
 - Somente inteiros nas regras; sem ponto flutuante.
 - RNG proprio e deterministico (ex.: xorshift de 32 bits) com semente
-  explicita, para permitir paridade com uma eventual versao MSX.
+  explicita, para permitir paridade futura com o MSX.
+
+Uma versao MSX futura reimplementara o Core em C usando as mesmas fixtures de
+teste. A opcao GDExtension fica adiada.
 
 ## Decisoes confirmadas
 
-- [x] O jogo usa dados digitais (d20, d12, d6).
+- [x] O jogo usa dados digitais.
 - [x] O combate e por turnos.
 - [x] O multijogador local e hot-seat.
-- [x] A logica e separada da apresentacao.
-- [x] O projeto e 2D.
+- [x] O cronometro varia por dificuldade.
+- [x] Dificuldades faceis podem desabilitar o cronometro.
+- [x] A logica deve ser separada da apresentacao.
+- [x] O projeto sera 2D.
 - [x] Godot 4.7.
 - [x] Core em GDScript puro.
 - [x] Windows como alvo principal e Linux como secundario.
-- [x] Regras, nomes e atributos do Manual v2.1 (D12); manuais anteriores
-  descartados.
-- [x] HP maximo dos herois 200; chefes nao passam do HP inicial.
-- [x] Tempo esgotado: -5 HP. Erro de conta: -10 HP.
-- [x] Suporte Vital: 11-20 cura, 6-10 estavel, 1-5 perde o valor do dado.
-- [x] Chefes esquivam com d6 + Sorte >= 8 e tem Cura Automatica.
-- [x] O sistema faz o papel do Arbitro.
-- [x] Tabuada ate 12x12 (crianca-alvo domina tabuadas avancadas).
+- [x] Nomes e personagens do PDF; Ricochete e Protocolo de Emergencia do GDD.
+- [x] Atributos rebalanceados por simulacao (GDD v2.1, secoes 4 e 8).
+- [x] HP inicial dos herois 200, maximo 250.
+- [x] Fôlego restrito em todos os modos.
+- [x] Ricochete em todos os modos, inclusive para o Mestre.
+- [x] Chefes esquivam com d6 + Sorte >= 8.
+- [x] HP e regeneracao dos chefes escalam pelo numero de ataques por rodada.
+- [x] Uma resposta por tentativa (Protocolo de Emergencia e a unica segunda
+  chance).
+- [x] Meio dano do Protocolo usa divisao inteira (arredonda para baixo).
+- [x] No torneio digital o sistema faz o papel do Arbitro.
+- [x] Dados de 1x1 a 10x10 em todas as dificuldades (crianca-alvo domina a
+  tabuada).
 
 ## Questoes em aberto
 
-Ver GDD secao 9.
-
-- [!] L1 - Como o chefe ataca (dano, alvo, quem resolve a conta).
-- [!] L2 - Ordem da rodada no Co-op.
-- [!] L3 - Quem controla o chefe (IA ou humano).
-- [!] L4 - Condicao de derrota no Co-op.
-- [!] L5 - Numero de herois no Co-op.
-- [~] L6 - Duracao do cronometro por dificuldade (proposta no GDD).
-- [ ] L7 - Equilibrio do Rastreador Cometa (vence 75% dos duelos).
-- [ ] L8 - Modos extras (torneio, Mestre humano, Protocolo de Emergencia).
+- [~] Validar em teste com a crianca os tempos propostos das dificuldades.
 - [ ] Definir se havera progresso persistente, conquistas ou apenas partidas.
 - [ ] Confirmar se Web ou toque serao alvos no futuro.
 
@@ -120,26 +132,30 @@ Ver GDD secao 9.
 
 ## 0.1. Fechar as regras
 
-- [x] Consolidar o Manual v2.1 no GDD v3.0.
-- [x] Verificar o ritmo de jogo do manual por simulacao.
-- [!] Fechar as lacunas L1 a L5.
-- [~] Fechar a duracao do cronometro por dificuldade (L6).
-- [ ] Decidir o equilibrio do Rastreador Cometa (L7).
-- [ ] Atualizar o GDD com todas as decisoes.
+- [~] Definir dificuldades e duracao do cronometro (proposta no GDD 6).
+- [x] Definir comportamento quando o cronometro estiver desabilitado.
+- [x] Definir comportamento do Chefe humano ao errar no Modo C.
+- [x] Definir quantidade de respostas por tentativa.
+- [x] Definir arredondamento do Protocolo de Emergencia.
+- [x] Definir `HPAtual` e `HPMax`.
+- [x] Definir verificacoes de eliminacao.
+- [x] Definir ordem de retaliacao, cura e vitoria.
+- [x] Decidir a variante de Juiz.
+- [x] Atualizar o GDD com todas as decisoes.
 
 ## 0.2. Escolher tecnologia
 
 - [x] Escolher e registrar a versao da Godot.
-- [x] Escolher a linguagem do Core.
+- [x] Escolher Core C compartilhado ou Core GDScript substituivel.
 - [x] Escolher plataformas de exportacao.
 - [ ] Confirmar se Web e requisito.
 - [ ] Confirmar se controles por toque sao requisito.
-- [x] Escolher o renderer.
+- [x] Escolher renderer Compatibility ou Mobile com base nos alvos.
 
 ## 0.3. Definir criterios de paridade
 
 - [x] Criar identificadores estaveis para herois e chefes.
-- [ ] Criar identificadores estaveis para modos e dificuldades.
+- [x] Criar identificadores estaveis para modos e dificuldades.
 - [ ] Definir formato dos comandos do Core.
 - [ ] Definir formato dos eventos do Core.
 - [ ] Definir casos de teste compartilhados.
@@ -147,7 +163,7 @@ Ver GDD secao 9.
 
 ## Criterio de conclusao
 
-- [ ] Regras e tecnologia estao decididas sem impedir uma segunda plataforma.
+- [x] Regras e tecnologia estao decididas sem impedir uma segunda plataforma.
 
 ---
 
@@ -155,8 +171,8 @@ Ver GDD secao 9.
 
 ## 1.1. Criar o projeto
 
-- [~] Criar o diretorio `godot`.
-- [~] Criar projeto Godot 4.7.
+- [ ] Criar o diretorio `godot`.
+- [ ] Criar projeto Godot 4.7.
 - [ ] Configurar renderer.
 - [ ] Configurar resolucao 1280x720.
 - [ ] Configurar stretch e preservacao de aspecto.
@@ -205,6 +221,8 @@ godot/
 
 ## 1.3. Autoloads minimos
 
+Autoloads previstos:
+
 ```text
 SceneRouter
 GameSession
@@ -220,6 +238,8 @@ AudioService
 - [ ] Documentar responsabilidade de cada Autoload.
 
 ## 1.4. Entrada
+
+Acoes previstas:
 
 ```text
 ui_confirm
@@ -251,12 +271,14 @@ skip_animation
 
 ## 2.1. Estrutura do Core
 
+Estrutura prevista (GDScript puro):
+
 ```text
 scripts/core/
   battle_core.gd      # maquina de estados da batalha
-  combatant.gd        # atributos, HP e HP maximo
-  rules.gd            # suporte vital, dano, esquiva, cura do chefe
-  dice.gd             # RNG deterministico com semente (d6, d12, d20)
+  combatant.gd        # atributos e HP
+  rules.gd            # formulas (folego, dano, esquiva, escala do chefe)
+  dice.gd             # RNG deterministico com semente
   answer_timer.gd     # cronometro em milissegundos inteiros
   answer_input.gd     # digitos, apagar, confirmar
   core_event.gd       # tipos e campos dos eventos
@@ -265,6 +287,7 @@ scripts/core/
 
 - [ ] Nenhum script do Core herda de `Node`.
 - [ ] Usar somente inteiros nas regras.
+- [ ] Evitar ponto flutuante nas regras.
 - [ ] Evitar leitura direta de arquivos.
 - [ ] Evitar chamadas de audio, video ou entrada.
 
@@ -291,13 +314,13 @@ EVENT_DICE_ROLLED
 EVENT_TIMER_STARTED
 EVENT_TIMER_UPDATED
 EVENT_ANSWER_CORRECT
-EVENT_ANSWER_WRONG        # Sobrecarga: -10 HP
-EVENT_TIMEOUT             # Falha de Mira: -5 HP
+EVENT_ANSWER_WRONG
+EVENT_TIMEOUT
+EVENT_EMERGENCY_STARTED
 EVENT_DAMAGE
 EVENT_HEAL
-EVENT_SHORT_CIRCUIT       # Curto-circuito do Suporte Vital
 EVENT_DODGE
-EVENT_BOSS_REGEN
+EVENT_REGEN
 EVENT_ENTITY_DEFEATED
 EVENT_TURN_CHANGED
 EVENT_BATTLE_FINISHED
@@ -309,7 +332,11 @@ EVENT_BATTLE_FINISHED
 - [ ] Garantir ordem deterministica.
 - [ ] Documentar o significado de cada campo.
 
-## 2.4. Adaptador
+## 2.4. Integracao GDExtension
+
+Adiada. Sera reavaliada quando a versao MSX comecar.
+
+## 2.5. Adaptador
 
 - [ ] Criar uma interface unica usada pela aplicacao.
 - [ ] Implementar `start_battle(config)`.
@@ -319,10 +346,10 @@ EVENT_BATTLE_FINISHED
 - [ ] Implementar `get_snapshot()`.
 - [ ] Garantir que a UI nao conheca os detalhes internos do Core.
 
-## 2.5. RNG e tempo
+## 2.6. RNG e tempo
 
 - [ ] Receber semente explicitamente.
-- [ ] Implementar d6, d12 e d20 uniformes.
+- [ ] Implementar dados uniformes.
 - [ ] Separar resultado logico de animacao.
 - [ ] Usar tempo inteiro no Core.
 - [ ] Converter `_process(delta)` em ticks inteiros.
@@ -340,10 +367,12 @@ EVENT_BATTLE_FINISHED
 
 ## 3.1. Dados dos personagens
 
-- [ ] Criar esquema de Heroi (6 herois).
-- [ ] Criar esquema de Chefe (4 chefes).
+- [ ] Criar esquema de Heroi.
+- [ ] Criar esquema de Chefe (HP e regeneracao "de carta" para 3 atacantes).
 - [ ] Adicionar HP inicial e maximo.
-- [ ] Adicionar Escudo, Sorte e Cura.
+- [ ] Adicionar Escudo.
+- [ ] Adicionar Sorte.
+- [ ] Adicionar Cura.
 - [ ] Adicionar identificadores de assets.
 - [ ] Validar identificadores duplicados.
 - [ ] Validar valores fora dos limites.
@@ -353,33 +382,47 @@ EVENT_BATTLE_FINISHED
 - [ ] Criar esquema de dificuldade.
 - [ ] Configurar cronometro.
 - [ ] Configurar cronometro desabilitado.
+- [ ] Configurar tempo do Protocolo de Emergencia.
 - [ ] Configurar ajuda visual.
 - [ ] Manter regras de dano fora dos dados de apresentacao.
 
 ## 3.3. Testes unitarios
 
-- [ ] Testar d6, d12 e d20.
+- [ ] Testar d6.
+- [ ] Testar d10.
+- [ ] Testar d20.
 - [ ] Testar semente deterministica.
 - [ ] Testar resposta correta.
-- [ ] Testar erro de conta (-10 HP).
-- [ ] Testar tempo esgotado (-5 HP).
+- [ ] Testar resposta errada.
+- [ ] Testar timeout.
 - [ ] Testar cronometro desabilitado.
-- [ ] Testar as tres faixas do Suporte Vital.
-- [ ] Testar HP maximo de 200 e cura desperdicada.
-- [ ] Testar escudo e dano minimo zero.
+- [ ] Testar cura.
+- [ ] Testar HP maximo (250).
+- [ ] Testar escudo.
+- [ ] Testar dano direto.
 - [ ] Testar esquiva de heroi e de chefe.
-- [ ] Testar Cura Automatica do chefe limitada ao HP inicial.
+- [ ] Testar escala de HP e regeneracao do chefe.
+- [ ] Testar Protocolo de Emergencia e meio dano.
 - [ ] Testar eliminacao.
-- [ ] Testar vitoria e derrota.
+- [ ] Testar vitoria.
+- [ ] Testar derrota.
 
 ## 3.4. Testes de paridade
 
-Fixtures independentes da engine contendo semente, configuracao, sequencia de
-comandos, tempos transcorridos, eventos esperados e snapshot final.
+Criar fixtures independentes da engine contendo:
+
+- Semente.
+- Configuracao da batalha.
+- Sequencia de comandos.
+- Tempos transcorridos.
+- Eventos esperados.
+- Snapshot final esperado.
+
+Tarefas:
 
 - [ ] Definir formato das fixtures.
 - [ ] Executar fixtures no Core GDScript (headless).
-- [ ] Reservar execucao futura das mesmas fixtures em outra plataforma.
+- [ ] Reservar execucao futura das mesmas fixtures no MSX.
 
 ## Criterio de conclusao
 
@@ -465,7 +508,9 @@ BattleScreen
 
 - [ ] Mostrar jogador atual.
 - [ ] Mostrar HP atual e maximo.
-- [ ] Mostrar Escudo, Sorte e Cura.
+- [ ] Mostrar Escudo.
+- [ ] Mostrar Sorte.
+- [ ] Mostrar Cura.
 - [ ] Mostrar estado eliminado.
 - [ ] Mostrar fase atual.
 - [ ] Atualizar somente em resposta a eventos ou snapshots.
@@ -476,22 +521,24 @@ BattleScreen
 - [ ] Mostrar barra visual.
 - [ ] Alterar cor perto do fim.
 - [ ] Tocar alerta sem se tornar irritante.
-- [ ] Indicar "sem limite" quando desabilitado.
+- [ ] Ocultar ou indicar "sem limite" quando desabilitado.
 - [ ] Parar visualmente durante pausa.
 
 ## 5.4. Campo de resposta
 
-- [ ] Receber teclado e teclado numerico.
+- [ ] Receber teclado.
+- [ ] Receber teclado numerico.
 - [ ] Receber gamepad por teclado virtual.
-- [ ] Implementar apagar e confirmar.
-- [ ] Limitar a 3 digitos (maximo 144).
+- [ ] Implementar apagar.
+- [ ] Implementar confirmar.
+- [ ] Limitar tamanho.
 - [ ] Bloquear entrada fora da fase correta.
 - [ ] Exibir foco com clareza.
 
 ## 5.5. Dados digitais
 
 - [ ] Criar visual de d6.
-- [ ] Criar visual de d12.
+- [ ] Criar visual de d10.
 - [ ] Criar visual de d20.
 - [ ] Animar sem gerar novos resultados logicos.
 - [ ] Permitir pular ou acelerar.
@@ -504,11 +551,11 @@ BattleScreen
 
 ---
 
-# Fase 6 - Vertical slice do Duelo
+# Fase 6 - Vertical slice do Modo A
 
 ## 6.1. Configuracao
 
-- [ ] Selecionar Duelo.
+- [ ] Selecionar Modo A.
 - [ ] Selecionar dificuldade.
 - [ ] Selecionar dois Herois.
 - [ ] Validar selecao.
@@ -517,16 +564,18 @@ BattleScreen
 ## 6.2. Turno completo
 
 - [ ] Mostrar passagem hot-seat.
-- [ ] Executar Suporte Vital (d20).
-- [ ] Resolver sucesso, estabilidade ou curto-circuito.
-- [ ] Animar 2d12.
+- [ ] Executar Folego.
+- [ ] Animar d20.
+- [ ] Resolver cura, estabilidade ou sobrecarga.
+- [ ] Animar 2d10.
 - [ ] Mostrar multiplicacao.
 - [ ] Iniciar cronometro.
 - [ ] Receber resposta.
 - [ ] Resolver acerto.
-- [ ] Resolver erro de conta (Sobrecarga).
-- [ ] Resolver tempo esgotado (Falha de Mira).
-- [ ] Executar Esquiva do defensor.
+- [ ] Resolver erro.
+- [ ] Resolver timeout.
+- [ ] Resolver Ricochete Laser.
+- [ ] Executar Esquiva.
 - [ ] Resolver dano.
 - [ ] Trocar jogador.
 - [ ] Resolver vitoria.
@@ -534,7 +583,10 @@ BattleScreen
 ## 6.3. Resultado
 
 - [ ] Mostrar vencedor.
-- [ ] Mostrar resumo da partida (acertos, erros, tempos esgotados).
+- [ ] Mostrar resumo da partida.
+- [ ] Mostrar acertos.
+- [ ] Mostrar erros.
+- [ ] Mostrar timeouts.
 - [ ] Permitir revanche.
 - [ ] Permitir voltar ao menu.
 
@@ -542,47 +594,57 @@ BattleScreen
 
 - [ ] Uma nave aliada animada.
 - [ ] Um oponente visual.
-- [ ] Efeitos de rolagem, ataque, impacto, cura, sobrecarga e falha de mira.
-- [ ] Musica e efeitos sonoros provisorios.
+- [ ] Efeito de rolagem.
+- [ ] Efeito de ataque.
+- [ ] Efeito de impacto.
+- [ ] Efeito de cura.
+- [ ] Efeito de Ricochete.
+- [ ] Musica provisoria.
+- [ ] Efeitos sonoros provisorios.
 
 ## Criterio de conclusao
 
-- [ ] Uma partida completa de Duelo pode ser jogada do menu ao resultado.
+- [ ] Uma partida completa do Modo A pode ser jogada do menu ao resultado.
 
 ---
 
-# Fase 7 - Co-op contra Chefe
+# Fase 7 - Modo B
 
-Bloqueada ate o fechamento das lacunas L1-L5 do GDD.
+## 7.1. Configuracao cooperativa
 
-## 7.1. Configuracao
-
-- [!] Selecionar a dupla de Herois.
-- [ ] Selecionar um dos 4 Chefes.
+- [ ] Selecionar dois Herois.
+- [ ] Selecionar um Chefe.
 - [ ] Selecionar dificuldade.
 - [ ] Identificar visualmente os dois jogadores.
 
-## 7.2. Turno dos Herois
+## 7.2. Ataque sincronizado
 
-- [ ] Executar Suporte Vital de cada heroi.
-- [ ] Executar ataque de cada heroi (2d12).
-- [ ] Rolar Sorte Ativada do Chefe a cada ataque.
-- [ ] Aplicar Escudo do Chefe.
-- [ ] Encerrar imediatamente se o Chefe for eliminado.
+- [ ] Rolar um d10 por Heroi.
+- [ ] Receber resposta conjunta.
+- [ ] Resolver primeira tentativa.
+- [ ] Iniciar Protocolo de Emergencia.
+- [ ] Exibir timer especial (duracao conforme dificuldade).
+- [ ] Resolver resposta de emergencia.
+- [ ] Aplicar dano reduzido (divisao inteira).
+- [ ] Aplicar Ricochete aos pilotos vivos em falha final.
+- [ ] Piloto sobrevivente rola os dois d10 sozinho.
 
 ## 7.3. Turno do Chefe
 
-- [ ] Aplicar Cura Automatica no inicio do turno.
-- [!] Executar o ataque do Chefe (regra L1).
+- [ ] Regenerar no inicio do turno do Chefe.
+- [ ] Rolar 2d10 do ataque do Chefe.
 - [ ] Rolar esquivas individualmente.
-- [ ] Verificar derrota (regra L4).
+- [ ] Aplicar dano menos o Escudo de cada heroi.
+- [ ] Encerrar imediatamente se o Chefe for eliminado.
 
 ## 7.4. Balanceamento
 
-- [x] Simular o Duelo com as regras do Manual v2.1.
-- [x] Estimar a duracao do Co-op pelo dano dos herois.
-- [ ] Simular o Co-op completo depois de fechar L1-L5.
-- [ ] Repetir as simulacoes com o Core GDScript em modo headless.
+- [x] Criar simulador sem UI (prototipo em Python, fora do projeto).
+- [x] Medir duracao media.
+- [x] Medir taxa de vitoria por dupla.
+- [x] Avaliar regeneracao.
+- [x] Avaliar dano reduzido.
+- [ ] Repetir a simulacao com o Core GDScript em modo headless.
 
 ## Criterio de conclusao
 
@@ -590,52 +652,87 @@ Bloqueada ate o fechamento das lacunas L1-L5 do GDD.
 
 ---
 
-# Fase 8 - Arte e animacao finais
+# Fase 8 - Modo C
 
-## 8.1. Direcao de arte
+## 8.1. Turnos dos Herois
+
+- [ ] Configurar tres ou quatro Herois.
+- [ ] Mostrar passagem hot-seat.
+- [ ] Executar Folego.
+- [ ] Executar ataque matematico.
+- [ ] Resolver esquiva do Chefe e dano.
+- [ ] Verificar eliminacao.
+- [ ] Passar ao proximo Heroi ativo.
+
+## 8.2. Turno do Mestre
+
+- [ ] Confirmar troca hot-seat.
+- [ ] Regenerar o Chefe.
+- [ ] Rolar 2d10.
+- [ ] Apresentar pergunta.
+- [ ] Executar cronometro.
+- [ ] Resolver acerto, erro ou timeout (Ricochete no Chefe).
+- [ ] Executar Defesa Desesperada.
+- [ ] Aplicar dano em area.
+
+## 8.3. Eliminacao
+
+- [ ] Pular Herois eliminados.
+- [ ] Encerrar quando todos os Herois forem eliminados.
+- [ ] Encerrar imediatamente quando o Chefe for eliminado.
+- [ ] Mostrar eliminados claramente.
+
+## Criterio de conclusao
+
+- [ ] O Modo C funciona integralmente usando o mesmo Core dos demais modos.
+
+---
+
+# Fase 9 - Arte e animacao finais
+
+## 9.1. Direcao de arte
 
 - [ ] Criar guia de paleta.
-- [ ] Criar guia de formas dos aliados e das ameacas.
-- [ ] Definir estilo dos paineis e dos dados.
+- [ ] Criar guia de formas dos aliados.
+- [ ] Criar guia de formas das ameacas.
+- [ ] Definir estilo dos paineis.
+- [ ] Definir estilo dos dados.
 - [ ] Definir resolucao-fonte dos assets.
 - [ ] Definir politica de importacao e compressao.
 
-## 8.2. Personagens
+## 9.2. Personagens
 
-Arte existente (ilustracoes do manual anterior) indicada com `[~]`.
-
-- [~] Astro-Enlatado.
-- [~] Ninja Sideral.
-- [~] Mago Quantico.
-- [~] Barbaro de Marte.
-- [~] Capitao Estelar.
-- [ ] Rastreador Cometa (sem arte).
-- [~] Nebulosa Fantasma.
-- [ ] Tita Cibernetico (sem arquivo no projeto).
-- [~] O Devorador.
-- [ ] Singularidade Sombria (sem arte).
-- [ ] Dado d12 (substitui o d10).
+- [ ] Astro-Enlatado.
+- [ ] Capitao Estelar.
+- [ ] Barbaro de Marte.
+- [ ] Mago Quantico.
+- [ ] Ninja Sideral.
+- [ ] O Devorador.
+- [ ] Nebulosa Fantasma.
+- [ ] Tita Cibernetico.
 - [ ] Estados normal, dano, cura e derrota.
 - [ ] Icones ou retratos.
 
-## 8.3. Sistema de animacao
+## 9.3. Sistema de animacao
 
 - [ ] Criar controlador de animacao por eventos.
 - [ ] Criar fila de apresentacao.
 - [ ] Aguardar animacoes bloqueantes sem parar a aplicacao.
-- [ ] Permitir aceleracao e reducao de movimento.
+- [ ] Permitir aceleracao.
+- [ ] Permitir reducao de movimento.
 - [ ] Garantir que animacao nao decida regras.
 
-## 8.4. Efeitos
+## 9.4. Efeitos
 
 - [ ] Laser.
 - [ ] Impacto no escudo.
 - [ ] Esquiva.
+- [ ] Ricochete.
 - [ ] Sobrecarga.
-- [ ] Falha de Mira.
-- [ ] Curto-circuito.
-- [ ] Cura e regeneracao.
-- [ ] Vitoria e derrota.
+- [ ] Cura.
+- [ ] Regeneracao.
+- [ ] Vitoria.
+- [ ] Derrota.
 
 ## Criterio de conclusao
 
@@ -643,28 +740,36 @@ Arte existente (ilustracoes do manual anterior) indicada com `[~]`.
 
 ---
 
-# Fase 9 - Audio
+# Fase 10 - Audio
 
-## 9.1. Estrutura
+## 10.1. Estrutura
 
 - [ ] Criar buses Master, Music, SFX e UI.
 - [ ] Criar controle de volume por bus.
 - [ ] Persistir configuracoes.
 - [ ] Impedir sobreposicao excessiva de sons.
 
-## 9.2. Efeitos sonoros
+## 10.2. Efeitos sonoros
 
-- [ ] Navegacao, confirmacao e cancelamento.
+- [ ] Navegacao.
+- [ ] Confirmacao.
+- [ ] Cancelamento.
 - [ ] Rolagem de dado.
-- [ ] Acerto e erro matematico.
+- [ ] Acerto matematico.
+- [ ] Erro matematico.
 - [ ] Alerta de tempo.
-- [ ] Ataque, impacto e esquiva.
+- [ ] Ataque.
+- [ ] Impacto.
+- [ ] Esquiva.
 - [ ] Cura.
 - [ ] Derrota.
 
-## 9.3. Musica
+## 10.3. Musica
 
-- [ ] Menu, batalha, vitoria e derrota.
+- [ ] Menu.
+- [ ] Batalha.
+- [ ] Vitoria.
+- [ ] Derrota.
 - [ ] Transicoes suaves.
 - [ ] Loop sem cortes perceptiveis.
 
@@ -674,9 +779,9 @@ Arte existente (ilustracoes do manual anterior) indicada com `[~]`.
 
 ---
 
-# Fase 10 - Acessibilidade e experiencia infantil
+# Fase 11 - Acessibilidade e experiencia infantil
 
-## 10.1. Legibilidade
+## 11.1. Legibilidade
 
 - [ ] Fonte grande.
 - [ ] Contraste suficiente.
@@ -685,7 +790,7 @@ Arte existente (ilustracoes do manual anterior) indicada com `[~]`.
 - [ ] Destaque claro do jogador atual.
 - [ ] Suporte a diferentes proporcoes de tela.
 
-## 10.2. Cronometro e pressao
+## 11.2. Cronometro e pressao
 
 - [ ] Avisar antes de iniciar.
 - [ ] Permitir modo sem cronometro.
@@ -693,18 +798,20 @@ Arte existente (ilustracoes do manual anterior) indicada com `[~]`.
 - [ ] Nao usar flashes agressivos.
 - [ ] Pausar quando a janela perde foco, se apropriado.
 
-## 10.3. Feedback educativo
+## 11.3. Feedback educativo
 
 - [ ] Mostrar a operacao correta apos erro.
-- [ ] Mostrar a resposta correta apos tempo esgotado.
+- [ ] Mostrar a resposta correta apos timeout.
 - [ ] Dar tempo para leitura.
 - [ ] Usar linguagem encorajadora.
 - [ ] Explicar a consequencia mecanica.
 - [ ] Permitir confirmacao antes de continuar.
 
-## 10.4. Opcoes
+## 11.4. Opcoes
 
-- [ ] Volumes (geral, musica, efeitos).
+- [ ] Volume geral.
+- [ ] Volume de musica.
+- [ ] Volume de efeitos.
 - [ ] Tela cheia.
 - [ ] Reduzir movimento.
 - [ ] Velocidade das animacoes.
@@ -718,16 +825,19 @@ Arte existente (ilustracoes do manual anterior) indicada com `[~]`.
 
 ---
 
-# Fase 11 - Persistencia e localizacao
+# Fase 12 - Persistencia e localizacao
 
-## 11.1. Configuracoes
+## 12.1. Configuracoes
 
 - [ ] Definir formato versionado.
-- [ ] Salvar volumes, modo de janela e acessibilidade.
-- [ ] Tratar arquivo ausente ou corrompido explicitamente.
+- [ ] Salvar volumes.
+- [ ] Salvar modo de janela.
+- [ ] Salvar opcoes de acessibilidade.
+- [ ] Tratar arquivo ausente.
+- [ ] Tratar arquivo corrompido explicitamente.
 - [ ] Implementar migracao entre versoes quando necessario.
 
-## 11.2. Progresso opcional
+## 12.2. Progresso opcional
 
 Somente implementar depois de decisao no GDD:
 
@@ -735,9 +845,9 @@ Somente implementar depois de decisao no GDD:
 - [ ] Definir progresso ou desbloqueios.
 - [ ] Evitar armazenar dados pessoais de criancas.
 - [ ] Permitir apagar o progresso.
-- [ ] Nao tornar progresso requisito para jogar.
+- [ ] Nao tornar progresso requisito para jogar os modos principais.
 
-## 11.3. Localizacao
+## 12.3. Localizacao
 
 - [ ] Extrair todos os textos de UI.
 - [ ] Definir chaves estaveis.
@@ -753,55 +863,68 @@ Somente implementar depois de decisao no GDD:
 
 ---
 
-# Fase 12 - Qualidade, desempenho e exportacao
+# Fase 13 - Qualidade, desempenho e exportacao
 
-## 12.1. Testes de integracao
+## 13.1. Testes de integracao
 
-- [ ] Menu ate batalha, batalha ate resultado, revanche e retorno ao menu.
+- [ ] Menu ate batalha.
+- [ ] Batalha ate resultado.
+- [ ] Revanche.
+- [ ] Retorno ao menu.
 - [ ] Pausa.
 - [ ] Troca de dispositivo de entrada.
-- [ ] Todas as dificuldades, herois, chefes e modos.
+- [ ] Todas as dificuldades.
+- [ ] Todos os Herois.
+- [ ] Todos os Chefes.
+- [ ] Todos os modos.
 
-## 12.2. Casos extremos
+## 13.2. Casos extremos
 
 - [ ] Acerto no ultimo instante.
-- [ ] Tempo esgotado sem entrada.
-- [ ] Entrada no mesmo frame do tempo esgotado.
-- [ ] Sobrecarga ou Falha de Mira eliminando o atacante.
-- [ ] Curto-circuito eliminando o heroi.
-- [ ] Chefe eliminado antes de agir.
+- [ ] Timeout sem entrada.
+- [ ] Entrada no mesmo frame do timeout.
+- [ ] Ricochete eliminando o atacante.
+- [ ] Sobrecarga do Folego eliminando o heroi.
+- [ ] Chefe eliminado antes de retaliar.
 - [ ] Cura proxima do HP maximo.
 - [ ] Todos os Herois eliminados no mesmo ataque.
 - [ ] Pausa durante pergunta.
 - [ ] Queda brusca de frame.
 - [ ] Gamepad desconectado.
 
-## 12.3. Desempenho
+## 13.3. Desempenho
 
 - [ ] Usar Profiler da Godot.
 - [ ] Eliminar alocacoes repetidas em loops importantes.
-- [ ] Revisar texturas e audio.
+- [ ] Reduzir overdraw.
+- [ ] Revisar tamanhos de textura.
+- [ ] Revisar importacao de audio.
 - [ ] Testar hardware de baixo desempenho.
 - [ ] Definir alvo de FPS.
 - [ ] Confirmar que o Core nao depende do FPS.
 
-## 12.4. Exportacao
+## 13.4. Exportacao
 
 Para Windows (principal) e Linux:
 
-- [ ] Instalar export templates.
-- [ ] Configurar presets, icone e metadados.
-- [ ] Exportar builds Debug e Release.
+- [ ] Instalar export template.
+- [ ] Configurar preset.
+- [ ] Configurar icone e metadados.
+- [ ] Exportar build Debug.
+- [ ] Exportar build Release.
 - [ ] Testar em instalacao limpa.
 - [ ] Gerar checksums ou artefatos versionados.
 
-## 12.5. Release candidate
+## 13.5. Release candidate
 
-- [ ] Congelar regras e formato de dados.
+- [ ] Congelar regras.
+- [ ] Congelar formato de dados.
 - [ ] Executar todos os testes.
 - [ ] Revisar erros do console.
 - [ ] Revisar licencas de assets.
-- [ ] Atualizar creditos, versao e notas da versao.
+- [ ] Atualizar creditos.
+- [ ] Atualizar versao.
+- [ ] Criar notas da versao.
 
 ## Criterio de conclusao
 
@@ -812,25 +935,27 @@ Para Windows (principal) e Linux:
 
 # Marcos do projeto
 
-- [x] **G0 - Pesquisa:** Manual v2.1 consolidado no GDD v3.0 e verificado por
-  simulacao.
+- [x] **G0 - Pesquisa:** GDD analisado, regras fechadas (v2.1) e plano criado.
 - [ ] **G1 - Fundacao:** projeto, entrada e navegacao basica funcionando.
 - [ ] **G2 - Core:** regras testadas e integradas por adaptador.
 - [ ] **G3 - Apresentacao:** HUD, dados, resposta e cronometro funcionais.
-- [ ] **G4 - Duelo:** jogavel do menu ao resultado.
-- [ ] **G5 - Co-op:** batalha contra chefes completa.
-- [ ] **G6 - Conteudo:** arte, animacoes e audio finais integrados.
-- [ ] **G7 - Acessibilidade:** opcoes e feedback infantil validados.
-- [ ] **G8 - Release candidate:** QA, desempenho e exportacoes concluidos.
-- [ ] **G9 - Lancamento:** builds finais publicados.
+- [ ] **G4 - Duelo:** Modo A jogavel do menu ao resultado.
+- [ ] **G5 - Cooperativo:** Modo B completo.
+- [ ] **G6 - Mestre:** Modo C completo.
+- [ ] **G7 - Conteudo:** arte, animacoes e audio finais integrados.
+- [ ] **G8 - Acessibilidade:** opcoes e feedback infantil validados.
+- [ ] **G9 - Release candidate:** QA, desempenho e exportacoes concluidos.
+- [ ] **G10 - Lancamento:** builds finais publicados.
 
 # Procedimento de retomada
+
+Ao voltar ao projeto depois de uma pausa:
 
 1. Ler `GDD.md`.
 2. Ler "Estado atual", "Questoes em aberto" e "Historico de decisoes" neste
    arquivo.
-3. Localizar a primeira tarefa `[~]`; se nao houver, a primeira `[ ]` da fase
-   atual.
+3. Localizar a primeira tarefa `[~]`; se nao houver, localizar a primeira `[ ]`
+   da fase atual.
 4. Consultar o ultimo commit e as alteracoes nao commitadas.
 5. Abrir o projeto na Godot 4.7.
 6. Executar os testes do Core e abrir a cena principal.
@@ -839,21 +964,31 @@ Para Windows (principal) e Linux:
 
 # Registro de validacoes
 
+Adicionar uma linha a cada validacao relevante.
+
 | Data | Fase | Ambiente | Comando ou teste | Resultado |
 |---|---|---|---|---|
 | 2026-10-03 | Pesquisa | Repositorio | Analise do GDD e criacao da SPEC | Concluido |
-| 2026-10-03 | Fase 0 | Simulador Python | Duelo com regras do Manual v2.1 (8% erro, 4% timeout) | ~8 rodadas; Rastreador 75%, Capitao 39% |
-| 2026-10-03 | Fase 0 | Simulador Python | Estimativa de dano dos herois contra os chefes | Chefes caem em 10-12 rodadas |
+| 2026-10-03 | Fase 0 | Simulador Python | Monte Carlo dos modos A, B e C com atributos v2.1 | Duelo 47-53%; B 76-81%; C 55-68% |
 
 # Historico de decisoes
+
+Adicionar decisoes que alterem arquitetura, regras ou plataforma. Nao registrar
+detalhes temporarios de implementacao.
 
 | Data | Decisao | Motivo |
 |---|---|---|
 | 2026-10-03 | Criar versao Godot em 2D | O jogo usa paineis, dados e combate por turnos |
 | 2026-10-03 | Separar Core, aplicacao e apresentacao | Portabilidade e testes |
-| 2026-10-03 | Renderer Compatibility, resolucao 1280x720 | Alcance de hardware e UI responsiva simples |
+| 2026-10-03 | Usar GDScript na apresentacao | Integracao direta e produtiva com Godot |
+| 2026-10-03 | Usar renderer Compatibility inicialmente | Maior alcance de hardware |
+| 2026-10-03 | Usar resolucao interna 1280x720 inicialmente | Base 16:9 simples para UI responsiva |
 | 2026-10-03 | Godot 4.7 | Versao estavel atual instalada |
-| 2026-10-03 | Core em GDScript puro | Foco em aprender Godot |
+| 2026-10-03 | Core em GDScript puro (substitui a recomendacao de C) | Foco em aprender Godot; C fica para a versao MSX |
 | 2026-10-03 | Windows principal, Linux secundario | Ambiente de trabalho do desenvolvedor |
-| 2026-10-03 | Manual v2.1 (D12) como fonte unica; GDD v3.0 | Nova versao das regras substitui todos os manuais anteriores |
-| 2026-10-03 | Descartar o rebalanceamento do GDD v2.1 | Baseado em regras e atributos substituidos |
+| 2026-10-03 | Nomes do PDF, Ricochete e Protocolo do GDD | Consolidacao das fontes |
+| 2026-10-03 | Fôlego restrito unico e HP max 250 | Com o Fôlego basico os duelos nao terminavam |
+| 2026-10-03 | Atributos de herois e chefes rebalanceados | Equilibrio validado por simulacao |
+| 2026-10-03 | Chefe escala HP e regeneracao por ataques/rodada | Modo B era impossivel contra o Tita |
+| 2026-10-03 | Ataque do chefe 2d10 - Escudo nos Modos B e C | Unificar regras e dar funcao ao Escudo no coop |
+| 2026-10-03 | Chefes esquivam com Sorte | A Sorte dos chefes nao era usada |

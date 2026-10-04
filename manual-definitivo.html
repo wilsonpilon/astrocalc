@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Matemática nas Estrelas v1.3a</title>
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  body { 
+    margin: 0; padding: 0; 
+    background-color: #ffffff; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact;
+  }
+  .sheet { 
+    width: 297mm; height: 210mm; 
+    padding: 10mm; box-sizing: border-box; 
+    display: flex; justify-content: space-between; align-items: center; 
+    position: relative; 
+    page-break-after: always; 
+    background: #ffffff;
+  }
+  .cut-line { 
+    position: absolute; left: 50%; top: 5mm; bottom: 5mm; 
+    border-left: 2px dashed #999; transform: translateX(-50%); 
+  }
+  .card { 
+    width: 48%; height: 100%; 
+    background-color: #161b22; 
+    border-radius: 15px; 
+    padding: 15px; box-sizing: border-box; 
+    color: #e6edf3; 
+    display: flex; flex-direction: column; 
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    position: relative;
+  }
+  .card.rule { border: 4px solid #f9a826; }
+  .card.hero { border: 4px solid #58a6ff; }
+  .card.boss { border: 4px solid #ff7b72; }
+  
+  h1 { text-align: center; font-size: 20px; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 1px; }
+  .rule h1 { color: #f9a826; }
+  .hero h1 { color: #58a6ff; }
+  .boss h1 { color: #ff7b72; }
+  
+  h2 { font-size: 14px; margin: 8px 0 4px 0; border-bottom: 1px solid #30363d; padding-bottom: 2px; color: #79c0ff; }
+  p, li { font-size: 11px; line-height: 1.4; margin: 4px 0; color: #c9d1d9; }
+  ul { padding-left: 15px; margin-bottom: 8px; }
+  
+  .hp-badge { 
+    position: absolute; top: 15px; right: 15px; 
+    background: #da3633; color: white; 
+    padding: 5px 15px; border-radius: 8px; 
+    font-weight: bold; font-size: 18px; border: 2px solid #ff7b72;
+    text-align: center;
+  }
+  .hp-badge span { display: block; font-size: 10px; text-transform: uppercase; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: auto; }
+  .stat-box { 
+    background: #0d1117; border-radius: 8px; padding: 10px 5px; 
+    text-align: center; border: 2px solid; 
+  }
+  .stat-box.escudo { border-color: #1f6feb; }
+  .stat-box.sorte { border-color: #3fb950; }
+  .stat-box.cura { border-color: #d29922; }
+  
+  .stat-val { font-size: 26px; font-weight: bold; display: block; margin-top: 5px; }
+  .stat-label { font-size: 10px; text-transform: uppercase; color: #8b949e; font-weight: bold;}
+  
+  .desc { font-style: italic; color: #8b949e; text-align: center; font-size: 11px; margin-top: 5px; margin-bottom: 10px;}
+  .highlight { color: #58a6ff; font-weight: bold; }
+  .danger { color: #ff7b72; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<!-- PÁGINA 1: REGRAS BÁSICAS E COMPETITIVO -->
+<div class="sheet">
+  <div class="card rule">
+    <h1>Matemática nas Estrelas</h1>
+    <div class="desc">O Livro de Regras da Galáxia - v1.3a</div>
+    <h2>Fase 1: Suporte Vital (1d20)</h2>
+    <p>O jogador ativando o turno rola um d20.</p>
+    <ul>
+      <li><span class="highlight">6 a 20 (Sorte):</span> Soma o dado + seu atributo de CURA e recupera esse valor de HP.</li>
+      <li><span class="danger">1 a 5 (Azar):</span> Falha! Perde de HP o valor tirado no dado.</li>
+    </ul>
+    <h2>Fase 2: O Canhão Principal (2d10)</h2>
+    <p>Rola-se 2d10 e multiplica-se os valores (Ataque Bruto).<br>
+    <span class="highlight">Mira Fixada (Opcional):</span> Acione o cronômetro do celular (ex: 60s). A resposta deve ser dada antes do tempo esgotar.</p>
+    <ul>
+      <li><span class="danger">Ricochete Laser (Penalidade):</span> Se o jogador errar o cálculo ou o tempo zerar, o tiro falha e o painel sobrecarrega: <strong>perde 10 HP direto</strong>. A Fase 3 é cancelada.</li>
+    </ul>
+    <h2>Fase 3: Manobra Evasiva (1d6)</h2>
+    <p>O defensor rola 1d6 e soma com sua SORTE.</p>
+    <ul>
+      <li><span class="highlight">Soma 8 ou mais:</span> Esquivou! Zero dano.</li>
+      <li><span class="danger">Soma 7 ou menos:</span> Subtraia o ESCUDO do defensor do Ataque Bruto. O que sobrar é descontado do HP.</li>
+    </ul>
+  </div>
+  <div class="cut-line"></div>
+  <div class="card rule">
+    <h1>Modos de Batalha (PvP)</h1>
+    <h2>Duelo Estelar (1 vs 1)</h2>
+    <p>A batalha clássica. Escolham seus heróis e lutem usando as regras básicas. Vence quem zerar o HP do oponente primeiro.</p>
+    
+    <h2>Torneio de Chaves (3+ jogadores)</h2>
+    <p>Chaves de 1 contra 1. Os vencedores avançam para a final.</p>
+    <ul>
+      <li><strong>O Juiz Galáctico:</strong> Quem está esperando a vez assume o cargo de Juiz.</li>
+      <li>O Juiz mentaliza e calcula secretamente a multiplicação dos jogadores que estão duelando.</li>
+      <li>Se o jogador errar a conta, o Juiz aplica o <span class="danger">Ricochete Laser</span> imediatamente: o ataque é cancelado e o atacante perde 10 HP.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PÁGINA 2: MODOS COOPERATIVOS -->
+<div class="sheet">
+  <div class="card rule">
+    <h1>Ameaça Autônoma (Coop)</h1>
+    <div class="desc">2 Heróis vs 1 Chefe IA</div>
+    <h2>Ataque Sincronizado e Emergência</h2>
+    <ul>
+      <li>Piloto 1 e Piloto 2 rolam <strong>1d10 CADA UM</strong>. Juntos, multiplicam os resultados (Dano Conjunto).</li>
+      <li><span class="highlight">Protocolo de Emergência:</span> Se a dupla errar a conta (Ricochete Laser) ou o tempo esgotar, o parceiro tem <strong>5 segundos</strong> extras para falar a resposta certa. Se acertar, evita a perda de 10 HP, mas o ataque causa apenas metade do dano.</li>
+    </ul>
+    <h2>A Retaliação e Cura do Chefe</h2>
+    <ul>
+      <li>Monstros não rolam Fôlego. Eles <strong>revidam</strong> após qualquer ataque. Cada piloto rola 1d6 de esquiva. Quem somar (Dado + Sorte) <strong>7 ou menos</strong> toma 15 de dano.</li>
+      <li>No final da rodada, o Chefe regenera energia passivamente: soma seu atributo CURA direto ao seu HP.</li>
+    </ul>
+  </div>
+  <div class="cut-line"></div>
+  <div class="card rule">
+    <h1>Mestre da Galáxia (PvE)</h1>
+    <div class="desc">Até 4 Heróis vs 1 Mestre (Chefão)</div>
+    <h2>Fôlego Heroico Restrito (Para os Heróis)</h2>
+    <ul>
+      <li><span class="highlight">15 a 20:</span> Cura normal (Dado + Cura).</li>
+      <li><span class="highlight">6 a 14:</span> Estável. Nenhuma cura, nenhum dano.</li>
+      <li><span class="danger">1 a 5:</span> Sobrecarga! Perde 10 HP direto.</li>
+    </ul>
+    <h2>O Turno do Chefão (O Mestre)</h2>
+    <ul>
+      <li><strong>Regeneração Passiva:</strong> No início do seu turno, some o atributo Cura ao seu HP (automático, sem dados).</li>
+      <li><strong>Raio em Área:</strong> Role 2d10 e faça a multiplicação (Dano Bruto). Este ataque atinge todos os heróis simultaneamente.</li>
+      <li>Todos os heróis rolam a esquiva individualmente. Quem falhar, toma o Dano Bruto menos o próprio Escudo.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PÁGINA 3: HERÓIS 1 e 2 -->
+<div class="sheet">
+  <div class="card hero">
+    <div class="hp-badge">200<span>HP Máx</span></div>
+    <h1>Capitão Estelar</h1>
+    <div class="desc">O Paladino da Guarda (O Tanque Dramático)</div>
+    <p>O escudo mais resistente da galáxia. Dificilmente sofre danos altos, mas é o mais lento para desviar.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo">
+        <span class="stat-label">Escudo</span><span class="stat-val">15</span>
+      </div>
+      <div class="stat-box sorte">
+        <span class="stat-label">Sorte</span><span class="stat-val">2</span>
+      </div>
+      <div class="stat-box cura">
+        <span class="stat-label">Cura</span><span class="stat-val">6</span>
+      </div>
+    </div>
+  </div>
+  <div class="cut-line"></div>
+  <div class="card hero">
+    <div class="hp-badge">200<span>HP Máx</span></div>
+    <h1>Sombra Neon</h1>
+    <div class="desc">O Ninja das Sombras (Foco em Esquiva)</div>
+    <p>Ágil e letal. Ele desvia de quase tudo, mas se um ataque passar pelas defesas dele, a dor é grande.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo">
+        <span class="stat-label">Escudo</span><span class="stat-val">3</span>
+      </div>
+      <div class="stat-box sorte">
+        <span class="stat-label">Sorte</span><span class="stat-val">5</span>
+      </div>
+      <div class="stat-box cura">
+        <span class="stat-label">Cura</span><span class="stat-val">8</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PÁGINA 4: HERÓIS 3 e 4 -->
+<div class="sheet">
+  <div class="card hero">
+    <div class="hp-badge">200<span>HP Máx</span></div>
+    <h1>Tecnomago</h1>
+    <div class="desc">O Mago Arcano (Mestre da Cura)</div>
+    <p>Seus sistemas de nano-robôs garantem regenerações extremas caso tire números altos no Fôlego (d20).</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo">
+        <span class="stat-label">Escudo</span><span class="stat-val">5</span>
+      </div>
+      <div class="stat-box sorte">
+        <span class="stat-label">Sorte</span><span class="stat-val">3</span>
+      </div>
+      <div class="stat-box cura">
+        <span class="stat-label">Cura</span><span class="stat-val">18</span>
+      </div>
+    </div>
+  </div>
+  <div class="cut-line"></div>
+  <div class="card hero">
+    <div class="hp-badge">200<span>HP Máx</span></div>
+    <h1>Saqueador Espacial</h1>
+    <div class="desc">O Bárbaro Selvagem (Equilibrado e Brutal)</div>
+    <p>Uma nave feita de sucata pesada e armas potentes. Uma opção equilibrada para qualquer tipo de partida.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo">
+        <span class="stat-label">Escudo</span><span class="stat-val">8</span>
+      </div>
+      <div class="stat-box sorte">
+        <span class="stat-label">Sorte</span><span class="stat-val">4</span>
+      </div>
+      <div class="stat-box cura">
+        <span class="stat-label">Cura</span><span class="stat-val">10</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PÁGINA 5: HERÓI 5 e CHEFE 1 -->
+<div class="sheet">
+  <div class="card hero">
+    <div class="hp-badge">200<span>HP Máx</span></div>
+    <h1>Ciborgue Titânio</h1>
+    <div class="desc">Cavaleiro de Ferro (A Muralha Ofensiva)</div>
+    <p>Focado em aparar golpes de frente e curar os próprios sistemas rapidamente com energia reserva.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo">
+        <span class="stat-label">Escudo</span><span class="stat-val">12</span>
+      </div>
+      <div class="stat-box sorte">
+        <span class="stat-label">Sorte</span><span class="stat-val">2</span>
+      </div>
+      <div class="stat-box cura">
+        <span class="stat-label">Cura</span><span class="stat-val">14</span>
+      </div>
+    </div>
+  </div>
+  <div class="cut-line"></div>
+  <div class="card boss">
+    <div class="hp-badge" style="background:#8b0000;">600<span>HP Máx</span></div>
+    <h1>Devorador de Planetas</h1>
+    <div class="desc">Ameaça Cósmica (O Tanque Absurdo)</div>
+    <p>Uma entidade ancestral colossal e lenta. Exige multiplicações altas constantes para ser ferido severamente.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo" style="border-color:#ff7b72;">
+        <span class="stat-label">Escudo</span><span class="stat-val">25</span>
+      </div>
+      <div class="stat-box sorte" style="border-color:#ff7b72;">
+        <span class="stat-label">Sorte</span><span class="stat-val">2</span>
+      </div>
+      <div class="stat-box cura" style="border-color:#ff7b72;">
+        <span class="stat-label">Regeneração</span><span class="stat-val">10</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PÁGINA 6: CHEFES 2 e 3 -->
+<div class="sheet">
+  <div class="card boss">
+    <div class="hp-badge" style="background:#8b0000;">400<span>HP Máx</span></div>
+    <h1>Nebulosa Fantasma</h1>
+    <div class="desc">Ameaça Cósmica (A Intangível)</div>
+    <p>Uma criatura de energia pura feita de estática. Sua sorte elevada exige ataques precisos e massivos.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo" style="border-color:#ff7b72;">
+        <span class="stat-label">Escudo</span><span class="stat-val">12</span>
+      </div>
+      <div class="stat-box sorte" style="border-color:#ff7b72;">
+        <span class="stat-label">Sorte</span><span class="stat-val">5</span>
+      </div>
+      <div class="stat-box cura" style="border-color:#ff7b72;">
+        <span class="stat-label">Regeneração</span><span class="stat-val">15</span>
+      </div>
+    </div>
+  </div>
+  <div class="cut-line"></div>
+  <div class="card boss">
+    <div class="hp-badge" style="background:#8b0000;">500<span>HP Máx</span></div>
+    <h1>Titã Cibernético</h1>
+    <div class="desc">Ameaça Cósmica (O Colosso Equilibrado)</div>
+    <p>Uma máquina de guerra autossustentável. A regeneração brutal pune turnos desperdiçados com erros de cálculo.</p>
+    <div class="stats-grid">
+      <div class="stat-box escudo" style="border-color:#ff7b72;">
+        <span class="stat-label">Escudo</span><span class="stat-val">18</span>
+      </div>
+      <div class="stat-box sorte" style="border-color:#ff7b72;">
+        <span class="stat-label">Sorte</span><span class="stat-val">4</span>
+      </div>
+      <div class="stat-box cura" style="border-color:#ff7b72;">
+        <span class="stat-label">Regeneração</span><span class="stat-val">20</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Operação Sideral - Manual</title>
+    <style>
+        /* Configuração de Impressão (A4 Retrato) */
+        @page { size: A4 portrait; margin: 0; }
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #ffffff; 
+            color: #111827; 
+            font-family: 'JetBrains Mono', 'Source Code Pro', 'Ubuntu Mono', monospace; font-weight: bold; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact; 
+        }
+        
+        /* Estrutura da Página Única (Portrait) */
+        .page { 
+            width: 210mm; height: 297mm; 
+            padding: 15mm; 
+            box-sizing: border-box; 
+            page-break-after: always; 
+            overflow: hidden; 
+        }
+        
+        /* Borda Arredondada e Tema Claro */
+        .page-inner { 
+            border: 3px solid #2563eb; 
+            border-radius: 25px; 
+            height: 100%; 
+            padding: 30px; 
+            box-sizing: border-box; 
+            background: #ffffff; 
+            position: relative; 
+            display: flex; flex-direction: column;
+        }
+        .page-inner::before {
+            content: '✦';
+            position: absolute;
+            top: 15px; right: 25px;
+            color: #2563eb; opacity: 0.2; font-size: 28px;
+        }
+
+        /* Tipografia */
+        h1, h2, h3 { text-transform: uppercase; letter-spacing: 1px; margin-top: 0; }
+        h1 { color: #1d4ed8; font-size: 40px; text-align: center; border-bottom: 3px solid #2563eb; padding-bottom: 15px; margin-bottom: 25px; }
+        h2 { color: #1e40af; font-size: 28px; border-left: 5px solid #d97706; padding-left: 12px; margin-top: 25px; margin-bottom: 15px; }
+        p, li { font-size: 20px; font-weight: bold; line-height: 1.5; margin-bottom: 12px; }
+        ul { padding-left: 25px; }
+
+        /* Capa */
+        .cover-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
+        .logo { font-size: 54px; color: #1e3a8a; font-weight: 900; margin-bottom: 10px; letter-spacing: 3px; }
+        .subtitle { font-size: 28px; color: #059669; font-weight: bold; letter-spacing: 4px; margin-bottom: 60px; }
+        .art-scene { font-size: 70px; display: flex; flex-direction: column; align-items: center; gap: 30px; margin-bottom: 40px; }
+        .art-row { display: flex; gap: 40px; align-items: center; }
+        .version { margin-top: auto; font-size: 20px; font-weight: bold; color: #6b7280; font-weight: bold; }
+
+        /* Fichas de Personagem RPG */
+        .char-card { 
+            border: 3px solid #9ca3af; 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            background: #f9fafb; 
+        }
+        .char-card.boss { border-color: #ef4444; background: #fef2f2; }
+        .char-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 2px solid #d1d5db; 
+            padding-bottom: 10px; margin-bottom: 15px; 
+        }
+        .boss .char-header { border-bottom-color: #fca5a5; }
+        
+        .char-name { font-weight: bold; font-size: 20px; color: #1d4ed8; }
+        .boss .char-name { color: #b91c1c; }
+        .char-hp { background: #ef4444; color: white; padding: 5px 12px; border-radius: 12px; font-weight: bold; font-size: 20px; font-weight: bold; }
+        
+        /* Layout Interno da Ficha */
+        .char-body { display: flex; gap: 20px; align-items: center; }
+        .char-img { 
+            width: 100px; height: 100px; 
+            border-radius: 15px; 
+            background: #ffffff; 
+            border: 3px dashed #9ca3af; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 50px; flex-shrink: 0;
+        }
+        .boss .char-img { border-color: #f87171; background: #fff5f5; }
+        .char-stats { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .stat-box { 
+            border: 2px solid #d1d5db; 
+            border-radius: 12px; 
+            text-align: center; 
+            padding: 10px 5px; 
+            background: #ffffff; 
+        }
+        .boss .stat-box { border-color: #fca5a5; }
+        
+        .stat-title { font-size: 13px; color: #4b5563; text-transform: uppercase; font-weight: bold; }
+        .stat-val { font-size: 26px; font-weight: 900; margin-top: 5px; }
+        .s-esc { color: #2563eb; }
+        .s-sor { color: #059669; }
+        .s-cur { color: #d97706; }
+        .char-desc { font-size: 22px; font-weight: bold; font-weight: bold; margin-top: 15px; color: #374151; font-style: italic; line-height: 1.4; }
+
+        /* Tabela de Registro de Combate */
+        .combat-log { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        .combat-log th, .combat-log td { border: 2px solid #9ca3af; text-align: center; padding: 20px 10px; }
+        .combat-log th { background-color: #e5e7eb; color: #111827; font-size: 22px; font-weight: bold; }
+        .combat-log td { height: 80px; background-color: #ffffff; }
+        .coin-slot { display: inline-block; width: 60px; height: 60px; border-radius: 50%; border: 3px dashed #9ca3af; }
+    </style>
+</head>
+<body>
+
+    <!-- PÁGINA 1: CAPA -->
+    <div class="page">
+        <div class="page-inner">
+            <div class="cover-content">
+                <div class="art-scene">
+                    <div>🪐 ☄️</div>
+                    <div class="art-row">
+                        <span>🚀</span> <span>🛸</span> <span>🚀</span>
+                    </div>
+                    <div>💥</div>
+                    <div>👾</div>
+                </div>
+                <div class="logo">OPERAÇÃO SIDERAL</div>
+                <div class="subtitle">RPG MATEMÁTICO</div>
+                <p style="color: #4b5563; max-width: 300px; margin: 30px auto; font-size: 22px; font-weight: bold;">Equipe sua nave, calcule as coordenadas e dispare os canhões neste duelo de precisão e tabuada.</p>
+                <div class="version">Versão 2.1 • Edição Definitiva (D12)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PÁGINA 2: REGRAS GERAIS -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Regras de Combate</h1>
+            
+            <h2>1. Regras Gerais de Controle</h2>
+            <ul>
+                <li><strong>Limites de HP:</strong> A vida máxima de qualquer herói é <strong>200 HP</strong>. A vida dos Chefes é o seu valor inicial. Toda cura que ultrapassar esse limite é desperdiçada.</li>
+                <li><strong>Tempo Esgotado (Falha de Mira): -5 HP.</strong> O tempo para a conta é cronometrado. Esgotou? O ataque é cancelado e a nave sofre uma pequena pane (perde 5 HP).</li>
+                <li><strong>Erro de Conta (Sobrecarga): -10 HP.</strong> Respondeu no tempo, mas errou a matemática? O ataque falha, o canhão sobrecarrega e o jogador perde 10 HP direto.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PÁGINA 3: O TURNO BÁSICO -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Regras de Combate (Cont.)</h1>
+
+            <h2>2. O Turno Básico</h2>
+            <p><strong>Fase 1: Suporte Vital (1d20)</strong><br>
+            Role 1 dado de 20 faces para verificar os sistemas:</p>
+            <ul>
+                <li><strong>11 a 20 (Sucesso):</strong> Cure HP igual ao valor do dado + sua CURA.</li>
+                <li><strong>6 a 10 (Estabilidade):</strong> Nada acontece. Não há cura nem dano.</li>
+                <li><strong>1 a 5 (Curto-circuito):</strong> Perca o valor do dado diretamente no seu HP.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PÁGINA 4: FASE 2 E 3 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Mecânicas Avançadas</h1>
+            
+            <h2>Continuação do Turno Básico</h2>
+            <p><strong>Fase 2: Canhão Principal (2d12)</strong><br>
+            Role 2 dados de 12 faces e multiplique os resultados para descobrir seu Dano Bruto. O Árbitro valida a conta e o tempo.</p>
+            
+            <p><strong>Fase 3: Defesa / Esquiva (1d6)</strong><br>
+            O jogador atacado rola 1d6 + sua SORTE.</p>
+            <ul>
+                <li><strong>8 ou mais:</strong> Esquiva total! Desvia sem sofrer dano.</li>
+                <li><strong>7 ou menos:</strong> Subtraia o seu ESCUDO do dano bruto do atacante para achar o dano final sofrido.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PÁGINA 5: MECÂNICA DOS CHEFES -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Mecânicas Avançadas (Cont.)</h1>
+
+            <h2>3. Mecânica dos Chefes (PvE / Co-op)</h2>
+            <ul>
+                <li><strong>Cura Automática:</strong> No início do turno, o Chefe não rola d20. Ele apenas soma o seu atributo CURA diretamente ao HP.</li>
+                <li><strong>Sorte Ativada:</strong> Para cada ataque que os heróis fizerem, o controlador do Chefe rola 1d6 + Sorte do Chefe. Se der 8 ou mais, o Chefe desvia do ataque inteiro.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PÁGINA 4: FICHAS HERÓIS 1 & 2 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Heróis da Frota</h1>
+
+            <div class="char-card">
+                <div class="char-header">
+                    <span class="char-name">ASTRO-ENLATADO</span>
+                    <span class="char-hp">MÁX: 200 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">🤖</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">15</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">1</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">2</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Tanque: Nunca esquiva, mas seu escudo aprimorado absorve a maior parte dos danos pesados do d12.</div>
+            </div>
+
+            <div class="char-card">
+                <div class="char-header">
+                    <span class="char-name">NINJA SIDERAL</span>
+                    <span class="char-hp">MÁX: 200 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">🥷</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">2</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">3</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">2</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Esquiva: Desvia de ataques com um 5 ou 6 no dado. A armadura é mínima; se for atingido, dói muito.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 5: FICHAS HERÓIS 3 & 4 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Heróis da Frota</h1>
+
+            <div class="char-card">
+                <div class="char-header">
+                    <span class="char-name">MAGO QUÂNTICO</span>
+                    <span class="char-hp">MÁX: 200 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">🧙‍♂️</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">5</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">2</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">8</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Recarga: Armadura leve, mas a cura de 8 garante a melhor recuperação do jogo quando o d20 colabora.</div>
+            </div>
+
+            <div class="char-card">
+                <div class="char-header">
+                    <span class="char-name">BÁRBARO DE MARTE</span>
+                    <span class="char-hp">MÁX: 200 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">👽</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">8</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">2</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">4</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Equilíbrio: O meio-termo ideal entre aguentar a pancada com o escudo e recuperar energia na cura.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 6: FICHAS HERÓIS 5 & 6 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Heróis da Frota</h1>
+
+            <div class="char-card">
+                <div class="char-header">
+                    <span class="char-name">CAPITÃO ESTELAR</span>
+                    <span class="char-hp">MÁX: 200 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">🛡</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">10</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">1</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">6</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Paladino: Foco total em absorção fixa de dano (10) e recuperação constante (6), ignorando a esquiva.</div>
+            </div>
+
+            <div class="char-card">
+                <div class="char-header">
+                    <span class="char-name">RASTREADOR COMETA</span>
+                    <span class="char-hp">MÁX: 200 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">☄️</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">4</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">4</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">5</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Patrulheiro: Excelente capacidade de esquiva (50% de chance) combinada com proteção e cura moderadas.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 7: CHEFES 1 & 2 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Ameaças Colossais</h1>
+
+            <div class="char-card boss">
+                <div class="char-header">
+                    <span class="char-name">NEBULOSA FANTASMA</span>
+                    <span class="char-hp">CHEFE: 300 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">👻</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">10</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">3</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">15</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Esquiva com frequência e regenera bem. Se os jogadores errarem as contas, ela recupera todo o dano.</div>
+            </div>
+
+            <div class="char-card boss">
+                <div class="char-header">
+                    <span class="char-name">TITÃ CIBERNÉTICO</span>
+                    <span class="char-hp">CHEFE: 400 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">⚙️</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">15</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">2</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">15</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Uma fortaleza de aço. O escudo 15 corta muito o impacto pesado dos dados d12, exigindo persistência.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 8: CHEFES 3 & 4 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Ameaças Colossais</h1>
+
+            <div class="char-card boss">
+                <div class="char-header">
+                    <span class="char-name">O DEVORADOR</span>
+                    <span class="char-hp">CHEFE: 450 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">👾</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">18</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">1</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">10</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Nunca esquiva, mas a carapaça corta 18 pontos de todo ataque. Treino garantido de matemática ininterrupta.</div>
+            </div>
+
+            <div class="char-card boss">
+                <div class="char-header">
+                    <span class="char-name">SINGULARIDADE SOMBRIA</span>
+                    <span class="char-hp">CHEFE: 600 HP</span>
+                </div>
+                <div class="char-body">
+                    <div class="char-img">🕳️</div>
+                    <div class="char-stats">
+                        <div class="stat-box"><div class="stat-title">Escudo</div><div class="stat-val s-esc">5</div></div>
+                        <div class="stat-box"><div class="stat-title">Sorte</div><div class="stat-val s-sor">1</div></div>
+                        <div class="stat-box"><div class="stat-title">Cura</div><div class="stat-val s-cur">20</div></div>
+                    </div>
+                </div>
+                <div class="char-desc">Entidade gravitacional imensa. A regeneração absurda força a dupla a não perder nenhum ataque por tempo.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA X: ESTATÍSTICAS DA MESA -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Estatísticas da Mesa</h1>
+            <h2>(Guia para o Árbitro)</h2>
+            
+            <p><strong>O Salto do Dano (2d12)</strong><br>
+            Multiplicar dados de 12 faces eleva o Dano Bruto médio para 42 por ataque (chegando a picos de 144). Isso exige precisão constante nas tabuadas mais avançadas.</p>
+            
+            <p><strong>A Zona Neutra da Cura (O novo d20)</strong><br>
+            Com a janela neutra de 6 a 10, a chance de curar caiu de 75% para 50%. Em contrapartida, quando o sucesso ocorre (11 a 20), o valor sorteado é naturalmente alto (média de 15,5). Somando aos atributos, a cura fica entre 17 e 23 HP, ocorrendo com menos frequência e valorizando as rodadas de sorte.</p>
+        </div>
+    </div>
+
+    <!-- PÁGINA Y: ESTATÍSTICAS DA MESA 2 -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Estatísticas da Mesa (Cont.)</h1>
+            
+            <p><strong>Ritmo de Jogo Ideal</strong><br>
+            O dano líquido sofrido por rodada gravita em torno de 27 a 40 HP. Subtraindo as curas esporádicas e esquivas, o dano real sofrido será de aproximadamente 20 HP por rodada. Isso garante que as partidas durem em média de 8 a 12 rodadas.</p>
+        </div>
+    </div>
+
+    <!-- PÁGINA 10: REGISTRO DE COMBATE -->
+    <div class="page">
+        <div class="page-inner">
+            <h1>Registro de Combate</h1>
+            <p style="text-align: center; color: #4b5563; font-size: 20px; font-weight: bold;">Use moedas reais ou fichas para marcar os Pontos de Vida (HP) de cada nave sobre os círculos abaixo durante a partida.</p>
+            
+            <table class="combat-log">
+                <tr>
+                    <th>PILOTO 1</th>
+                    <th>PILOTO 2</th>
+                </tr>
+                <tr>
+                    <td><div class="coin-slot"></div></td>
+                    <td><div class="coin-slot"></div></td>
+                </tr>
+                <tr>
+                    <td><div class="coin-slot"></div></td>
+                    <td><div class="coin-slot"></div></td>
+                </tr>
+                <tr>
+                    <td><div class="coin-slot"></div></td>
+                    <td><div class="coin-slot"></div></td>
+                </tr>
+                <tr>
+                    <td><div class="coin-slot"></div></td>
+                    <td><div class="coin-slot"></div></td>
+                </tr>
+            </table>
+            
+            <div style="margin-top: auto; text-align: center;">
+                <span style="font-size: 50px;">🚀</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

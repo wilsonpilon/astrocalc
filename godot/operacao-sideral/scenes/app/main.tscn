@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://c7lu8d2d6fpv8"]
+
+[ext_resource type="Script" uid="uid://dv26tesnf47hf" path="res://scripts/presentation/main.gd" id="1_j7qj6"]
+
+[node name="Main" type="Control" unique_id=401021540]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_j7qj6")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1031617957]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=1337878920]
+layout_mode = 2
+
+[node name="Pergunta" type="Label" parent="CenterContainer/VBoxContainer" unique_id=848567026]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+
+[node name="Resposta" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=1601384508]
+unique_name_in_owner = true
+layout_mode = 2
+max_length = 3
+
+[node name="Rolar" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1540668940]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Rolar 2d12"
+
+[node name="Status" type="Label" parent="CenterContainer/VBoxContainer" unique_id=361661780]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Tempo" type="ProgressBar" parent="CenterContainer/VBoxContainer" unique_id=857211824]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 30)
+layout_mode = 2
